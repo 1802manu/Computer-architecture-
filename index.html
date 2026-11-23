@@ -1,408 +1,487 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>COA Virtual Lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COA Simulator</title>
+
 <style>
 *{box-sizing:border-box}
-:root{--bg:#080d18;--panel:#111a2b;--panel2:#172238;--line:#263651;--text:#e9f0ff;--muted:#95a6c5;--accent:#5b9cff;--green:#39d98a;--orange:#ffb454;--red:#ff647c}
-body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
-header{padding:24px 18px;background:linear-gradient(120deg,#10234a,#101729);border-bottom:1px solid var(--line)}
-header h1{margin:0;font-size:25px}
-header p{color:var(--muted);margin:8px 0 0}
-.container{max-width:1200px;margin:auto;padding:16px}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
-.tab{white-space:nowrap;background:var(--panel);color:var(--muted);border:1px solid var(--line);padding:12px 15px;border-radius:12px;cursor:pointer}
-.tab.active{background:#214b89;color:white;border-color:var(--accent)}
-.panel{display:none}.panel.active{display:block}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
-h2{font-size:21px;margin:0 0 8px}
-h3{font-size:16px;margin:18px 0 10px}
-p{line-height:1.55;color:var(--muted)}
-label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
-input,select,textarea{width:100%;padding:12px;background:#080f1e;color:var(--text);border:1px solid var(--line);border-radius:10px;font-size:15px}
-input:focus,select:focus{outline:1px solid var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-button{padding:11px 15px;border:0;border-radius:10px;background:var(--accent);color:#fff;font-weight:bold;cursor:pointer;margin:4px 4px 4px 0}
-button.secondary{background:var(--panel2);border:1px solid var(--line)}
-button.green{background:#087d51}
-button.orange{background:#915c1e}
-button:disabled{opacity:.4;cursor:not-allowed}
-.result{background:#081221;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:12px;overflow:auto}
-.big{font-size:26px;font-weight:bold;color:var(--green);word-break:break-word}
-.small{font-size:13px;color:var(--muted)}
-.log{max-height:260px;overflow:auto}
-.log div{border-bottom:1px solid var(--line);padding:9px;color:#bdcbe4;font-family:monospace;font-size:13px}
-.regs{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
-.reg{background:#081221;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
-.reg b{display:block;color:var(--orange);font-size:12px;margin-bottom:7px}
-.reg span{font-family:monospace;font-size:17px;word-break:break-all}
-.diagram{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:16px 0}
-.block{border:1px solid var(--accent);background:#132746;padding:13px;border-radius:10px;text-align:center;min-width:70px}
-.arrow{color:var(--green);font-size:20px}
-table{border-collapse:collapse;width:100%;margin-top:12px}
-th,td{padding:10px;border-bottom:1px solid var(--line);text-align:center}
-th{color:var(--muted);font-size:13px}
-.hit{color:var(--green)}.miss{color:var(--red)}
-.pipeline{display:grid;grid-template-columns:repeat(5,minmax(65px,1fr));gap:4px;margin:10px 0}
-.stage{padding:9px 2px;border:1px solid var(--line);border-radius:8px;text-align:center;font-size:12px;color:var(--muted)}
-.stage.on{background:#214b89;color:white;border-color:var(--accent)}
-.stage.done{background:#13533c;color:#9fffc8}
-footer{text-align:center;padding:25px;color:var(--muted)}
-@media(max-width:600px){header h1{font-size:22px}.container{padding:10px}.card{padding:13px}.tab{padding:10px}}
+body{margin:0;background:#0b1020;color:#e5e7eb;font-family:Arial,sans-serif}
+header{text-align:center;padding:25px;background:#111a2e;border-bottom:1px solid #26344e}
+header h1{color:#60a5fa;margin:0 0 8px}
+header p{color:#9ca3af;margin:0}
+.container{max-width:1200px;margin:auto;padding:20px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.tab{padding:11px 16px;border:1px solid #334155;background:#1e293b;color:#e5e7eb;border-radius:8px;cursor:pointer}
+.tab:hover{background:#334155}
+.tab.active{background:#2563eb;border-color:#2563eb;color:white}
+.page{display:none;background:#111a2e;border:1px solid #273650;border-radius:12px;padding:22px}
+.page.active{display:block}
+h2{color:#60a5fa}
+.desc{color:#94a3b8}
+.fields{display:flex;flex-wrap:wrap;gap:15px;margin:20px 0}
+.field{display:flex;flex-direction:column;gap:7px;min-width:160px}
+input,select{padding:11px;background:#0b1020;color:white;border:1px solid #334155;border-radius:7px}
+button{cursor:pointer}
+.run,.reset{padding:11px 17px;border:0;border-radius:7px;color:white;margin:4px 3px 4px 0}
+.run{background:#2563eb}
+.reset{background:#475569}
+.output{background:#0b1020;border:1px solid #334155;border-radius:8px;padding:16px;margin-top:20px;overflow-x:auto;min-height:60px}
+table{border-collapse:collapse;width:100%;margin-top:14px;min-width:400px}
+th,td{border:1px solid #334155;padding:10px;text-align:center}
+th{background:#1e293b;color:#60a5fa}
+tr:nth-child(even){background:#131d31}
+.result{color:#4ade80}
+.error{color:#f87171}
+.mono{font-family:monospace}
+.diagram{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.box{background:#1e293b;border:1px solid #334155;border-radius:6px;padding:12px;text-align:center}
+.activeStage{background:#2563eb}
+@media(max-width:600px){
+.container{padding:10px}
+.page{padding:14px}
+.fields{gap:10px}
+.field{width:100%}
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>⚙ COA Virtual Lab</h1>
-<p>Computer Organization & Architecture — Interactive Program Simulator</p>
+<h1>Computer Organization & Architecture</h1>
+<p>Interactive COA Program Simulator</p>
 </header>
 
 <div class="container">
-<div class="tabs" id="tabs">
-<button class="tab active" data-tab="numbers">🔢 Number System</button>
-<button class="tab" data-tab="alu">🧮 ALU</button>
-<button class="tab" data-tab="booth">✖ Booth</button>
-<button class="tab" data-tab="division">➗ Division</button>
-<button class="tab" data-tab="cache">💾 Cache</button>
-<button class="tab" data-tab="pipeline">🚦 Pipeline</button>
-<button class="tab" data-tab="dma">📡 DMA</button>
+
+<div class="tabs">
+<button class="tab active" onclick="showPage('convert',this)">Number Converter</button>
+<button class="tab" onclick="showPage('alu',this)">ALU</button>
+<button class="tab" onclick="showPage('booth',this)">Booth Multiplication</button>
+<button class="tab" onclick="showPage('division',this)">Restoring Division</button>
+<button class="tab" onclick="showPage('cache',this)">Cache Mapping</button>
+<button class="tab" onclick="showPage('pipeline',this)">Pipeline</button>
+<button class="tab" onclick="showPage('dma',this)">DMA</button>
 </div>
 
-<!-- NUMBER SYSTEM -->
-<section class="panel active" id="numbers">
-<div class="card">
+<!-- NUMBER CONVERTER -->
+<section id="convert" class="page active">
 <h2>Number System Converter</h2>
-<p>Convert numbers between binary, decimal, octal and hexadecimal.</p>
-<div class="grid">
-<div><label>Input number</label><input id="numInput" value="25"></div>
-<div><label>Input base</label><select id="numBase">
-<option value="2">Binary</option><option value="8">Octal</option>
-<option value="10" selected>Decimal</option><option value="16">Hexadecimal</option>
-</select></div>
+<p class="desc">Convert a number between binary, decimal, octal and hexadecimal.</p>
+
+<div class="fields">
+<div class="field">
+<label>Input Number</label>
+<input id="cNum" value="25">
 </div>
-<button onclick="convertNumber()">Convert</button>
-<button class="secondary" onclick="setNumberExample()">Example</button>
-<div id="numResults" class="result">Enter a number and press Convert.</div>
+<div class="field">
+<label>Input Base</label>
+<select id="cBase">
+<option value="2">Binary</option>
+<option value="8">Octal</option>
+<option value="10" selected>Decimal</option>
+<option value="16">Hexadecimal</option>
+</select>
 </div>
+</div>
+
+<button class="run" onclick="convert()">Convert</button>
+<button class="reset" onclick="resetConvert()">Reset</button>
+<div class="output" id="cOut">Enter a number and click Convert.</div>
 </section>
 
 <!-- ALU -->
-<section class="panel" id="alu">
-<div class="card">
-<h2>ALU Simulator</h2>
-<p>The Arithmetic Logic Unit performs arithmetic and logical operations on data.</p>
-<div class="grid">
-<div><label>Operand A</label><input id="aluA" type="number" value="12"></div>
-<div><label>Operand B</label><input id="aluB" type="number" value="5"></div>
-<div><label>Operation</label>
-<select id="aluOp">
-<option value="ADD">ADD</option><option value="SUB">SUB</option>
-<option value="MUL">MUL</option><option value="DIV">DIV</option>
-<option value="AND">AND</option><option value="OR">OR</option>
-<option value="XOR">XOR</option><option value="NOT">NOT A</option>
-<option value="SHL">Shift left A</option><option value="SHR">Shift right A</option>
-</select></div>
+<section id="alu" class="page">
+<h2>Arithmetic Logic Unit (ALU)</h2>
+<p class="desc">Perform arithmetic and bitwise operations.</p>
+
+<div class="fields">
+<div class="field"><label>Operand A</label><input type="number" id="a" value="10"></div>
+<div class="field"><label>Operand B</label><input type="number" id="b" value="5"></div>
+<div class="field">
+<label>Operation</label>
+<select id="op">
+<option value="ADD">Addition</option>
+<option value="SUB">Subtraction</option>
+<option value="MUL">Multiplication</option>
+<option value="DIV">Division</option>
+<option value="AND">Bitwise AND</option>
+<option value="OR">Bitwise OR</option>
+<option value="XOR">Bitwise XOR</option>
+<option value="NOT">NOT A</option>
+<option value="SHL">Shift Left A</option>
+<option value="SHR">Shift Right A</option>
+</select>
 </div>
-<button onclick="runALU()">Execute</button>
-<button class="secondary" onclick="resetALU()">Reset</button>
-<div id="aluResult" class="result">ALU waiting for input.</div>
 </div>
+
+<button class="run" onclick="runALU()">Execute</button>
+<button class="reset" onclick="resetALU()">Reset</button>
+<div class="output" id="aluOut">ALU result will appear here.</div>
 </section>
 
 <!-- BOOTH -->
-<section class="panel" id="booth">
-<div class="card">
+<section id="booth" class="page">
 <h2>Booth Multiplication</h2>
-<p>Signed multiplication using Booth's algorithm. Step through the A, Q and Q−1 registers.</p>
-<div class="grid">
-<div><label>Multiplicand M</label><input id="boothM" type="number" value="5"></div>
-<div><label>Multiplier Q</label><input id="boothQ" type="number" value="-3"></div>
+<p class="desc">Signed binary multiplication using Booth's algorithm.</p>
+
+<div class="fields">
+<div class="field"><label>Multiplicand (M)</label><input type="number" id="bm" value="5"></div>
+<div class="field"><label>Multiplier (Q)</label><input type="number" id="bq" value="-3"></div>
 </div>
-<button onclick="startBooth()">Start / Calculate</button>
-<button class="green" onclick="boothStep()">Next Step</button>
-<button class="orange" onclick="boothRun()">Run All</button>
-<button class="secondary" onclick="boothReset()">Reset</button>
-<div id="boothRegs" class="result">Enter values and start simulation.</div>
-<div id="boothLog" class="log"></div>
-</div>
+
+<button class="run" onclick="runBooth()">Run Simulation</button>
+<button class="reset" onclick="resetBooth()">Reset</button>
+<div class="output" id="bOut">Booth steps will appear here.</div>
 </section>
 
-<!-- RESTORING DIVISION -->
-<section class="panel" id="division">
-<div class="card">
+<!-- DIVISION -->
+<section id="division" class="page">
 <h2>Restoring Division</h2>
-<p>Unsigned binary division. Each step shifts, subtracts and restores if the result is negative.</p>
-<div class="grid">
-<div><label>Dividend</label><input id="divQ" type="number" value="13" min="0"></div>
-<div><label>Divisor</label><input id="divM" type="number" value="3" min="1"></div>
+<p class="desc">Unsigned binary division with restoration of negative partial remainder.</p>
+
+<div class="fields">
+<div class="field"><label>Dividend</label><input type="number" id="dd" value="13" min="0"></div>
+<div class="field"><label>Divisor</label><input type="number" id="ds" value="3" min="1"></div>
 </div>
-<button onclick="startDivision()">Start</button>
-<button class="green" onclick="divisionStep()">Next Step</button>
-<button class="orange" onclick="divisionRun()">Run All</button>
-<button class="secondary" onclick="divisionReset()">Reset</button>
-<div id="divRegs" class="result">Enter values and start simulation.</div>
-<div id="divLog" class="log"></div>
-</div>
+
+<button class="run" onclick="runDivision()">Run Simulation</button>
+<button class="reset" onclick="resetDivision()">Reset</button>
+<div class="output" id="dOut">Division steps will appear here.</div>
 </section>
 
 <!-- CACHE -->
-<section class="panel" id="cache">
-<div class="card">
-<h2>Direct-Mapped Cache Simulator</h2>
-<p>Enter a memory address. See the cache line, tag, and whether the access is a hit or miss.</p>
-<div class="grid">
-<div><label>Cache lines</label><select id="cacheLines">
-<option>2</option><option selected>4</option><option>8</option><option>16</option>
-</select></div>
-<div><label>Block size (words)</label><select id="cacheBlock">
-<option selected>1</option><option>2</option><option>4</option><option>8</option>
-</select></div>
-<div><label>Memory address (decimal)</label><input id="cacheAddress" type="number" min="0" value="12"></div>
+<section id="cache" class="page">
+<h2>Direct-Mapped Cache</h2>
+<p class="desc">Simulate memory access and calculate tag, index and block offset.</p>
+
+<div class="fields">
+<div class="field"><label>Main Memory (Bytes)</label><input type="number" id="mem" value="1024"></div>
+<div class="field"><label>Cache Size (Bytes)</label><input type="number" id="cs" value="64"></div>
+<div class="field"><label>Block Size (Bytes)</label><input type="number" id="bs" value="4"></div>
+<div class="field"><label>Address</label><input type="number" id="ca" value="20"></div>
 </div>
-<button onclick="accessCache()">Access Address</button>
-<button class="secondary" onclick="resetCache()">Reset Cache</button>
-<div id="cacheResult" class="result">Cache is empty.</div>
-<table id="cacheTable"></table>
-</div>
+
+<button class="run" onclick="runCache()">Access Memory</button>
+<button class="reset" onclick="resetCache()">Reset Cache</button>
+<div class="output" id="cacheOut">Cache result will appear here.</div>
 </section>
 
 <!-- PIPELINE -->
-<section class="panel" id="pipeline">
-<div class="card">
-<h2>5-Stage Pipeline Simulator</h2>
-<p>Instructions move through IF → ID → EX → MEM → WB. Advance one clock cycle at a time.</p>
-<label>Instructions (one per line)</label>
-<textarea id="pipeInput" rows="5">ADD R1,R2,R3
-SUB R4,R1,R5
-LOAD R6,0(R1)
-MUL R7,R4,R6</textarea>
-<button onclick="pipelineStart()">Load Instructions</button>
-<button class="green" onclick="pipelineStep()">Next Clock Cycle</button>
-<button class="orange" onclick="pipelineRun()">Run All</button>
-<button class="secondary" onclick="pipelineReset()">Reset</button>
-<div id="pipeResult" class="result">Pipeline not started.</div>
-<div id="pipeLog" class="log"></div>
+<section id="pipeline" class="page">
+<h2>5-Stage Instruction Pipeline</h2>
+<p class="desc">Visualize the IF, ID, EX, MEM and WB stages for each instruction.</p>
+
+<div class="fields">
+<div class="field"><label>Number of Instructions</label><input type="number" id="pn" value="5" min="1" max="30"></div>
 </div>
+
+<button class="run" onclick="runPipeline()">Run Pipeline</button>
+<button class="reset" onclick="resetPipeline()">Reset</button>
+<div class="output" id="pOut">Pipeline will appear here.</div>
 </section>
 
 <!-- DMA -->
-<section class="panel" id="dma">
-<div class="card">
-<h2>DMA Transfer Simulator</h2>
-<p>Direct Memory Access transfers data between I/O and memory with minimal CPU involvement.</p>
-<div class="grid">
-<div><label>Transfer size (bytes)</label><input id="dmaSize" type="number" min="1" max="32" value="8"></div>
-<div><label>Transfer direction</label><select id="dmaDirection">
-<option value="io">I/O → Memory</option><option value="mem">Memory → I/O</option>
-</select></div>
+<section id="dma" class="page">
+<h2>Direct Memory Access (DMA)</h2>
+<p class="desc">Simulate DMA transfer of data in chunks.</p>
+
+<div class="fields">
+<div class="field"><label>Total Data (Bytes)</label><input type="number" id="dt" value="1024" min="1"></div>
+<div class="field"><label>Bytes per Transfer</label><input type="number" id="dc" value="128" min="1"></div>
 </div>
-<button onclick="dmaStart()">Start DMA</button>
-<button class="green" onclick="dmaStep()">Next Transfer</button>
-<button class="orange" onclick="dmaRun()">Run All</button>
-<button class="secondary" onclick="dmaReset()">Reset</button>
-<div class="diagram" id="dmaDiagram">
-<div class="block">CPU</div><span class="arrow">↔</span>
-<div class="block">DMA Controller</div><span class="arrow">↔</span>
-<div class="block">Memory</div>
-</div>
-<div id="dmaResult" class="result">Ready for transfer.</div>
-<div id="dmaLog" class="log"></div>
-</div>
+
+<button class="run" onclick="runDMA()">Start DMA</button>
+<button class="reset" onclick="resetDMA()">Reset</button>
+<div class="output" id="dmaOut">DMA result will appear here.</div>
 </section>
 
 </div>
-<footer>COA Virtual Lab • Practice, simulate, understand.</footer>
 
 <script>
-// ---------------- TABS ----------------
-document.querySelectorAll(".tab").forEach(btn=>{
-btn.addEventListener("click",()=>{
-document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
-document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+/* TAB SWITCHING */
+function showPage(id,btn){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 btn.classList.add("active");
-document.getElementById(btn.dataset.tab).classList.add("active");
-});
-});
+}
 
-// ---------------- NUMBER CONVERSION ----------------
-function convertNumber(){
-let raw=document.getElementById("numInput").value.trim();
-let base=Number(document.getElementById("numBase").value);
-let out=document.getElementById("numResults");
-try{
-if(!raw)throw Error("Enter a number first.");
+/* NUMBER CONVERSION */
+function convert(){
+let raw=document.getElementById("cNum").value.trim();
+let base=Number(document.getElementById("cBase").value);
+let out=document.getElementById("cOut");
+
+if(!raw){out.innerHTML="<span class='error'>Enter a number.</span>";return;}
 let n=parseInt(raw,base);
-if(!Number.isFinite(n))throw Error("Invalid input for the selected base.");
+
+if(!Number.isSafeInteger(n)){
+out.innerHTML="<span class='error'>Invalid number or value too large.</span>";
+return;
+}
+
+// Validate digits for selected base
+let valid={
+2:/^-?[01]+$/,
+8:/^-?[0-7]+$/,
+10:/^-?\d+$/,
+16:/^-?[0-9a-f]+$/i
+};
+
+if(!valid[base].test(raw)){
+out.innerHTML="<span class='error'>Invalid digits for selected base.</span>";
+return;
+}
+
 out.innerHTML=`
-<h3>Conversion Results</h3>
-<div class="grid">
-<div class="reg"><b>Binary</b><span>${n.toString(2)}</span></div>
-<div class="reg"><b>Decimal</b><span>${n}</span></div>
-<div class="reg"><b>Octal</b><span>${n.toString(8)}</span></div>
-<div class="reg"><b>Hexadecimal</b><span>${n.toString(16).toUpperCase()}</span></div>
-</div>
-<p>Decimal value: ${n}</p>
-<p class="small">Base ${base} input interpreted as ${n} in decimal.</p>`;
-}catch(e){out.innerHTML=`<p style="color:var(--red)">${e.message}</p>`}
+<h3 class="result">Conversion Result</h3>
+<table>
+<tr><th>System</th><th>Converted Value</th></tr>
+<tr><td>Binary</td><td class="mono">${n.toString(2)}</td></tr>
+<tr><td>Octal</td><td class="mono">${n.toString(8)}</td></tr>
+<tr><td>Decimal</td><td>${n}</td></tr>
+<tr><td>Hexadecimal</td><td class="mono">${n.toString(16).toUpperCase()}</td></tr>
+`;
 }
-function setNumberExample(){document.getElementById("numInput").value="101101";document.getElementById("numBase").value="2";convertNumber();}
+function resetConvert(){
+cNum.value="25";cBase.value="10";
+cOut.innerHTML="Enter a number and click Convert.";
+}
 
-// ---------------- ALU ----------------
+/* ALU */
 function runALU(){
-let a=Number(document.getElementById("aluA").value);
-let b=Number(document.getElementById("aluB").value);
-let op=document.getElementById("aluOp").value;
+let A=Number(a.value),B=Number(b.value),operation=op.value;
 let r;
-switch(op){
-case "ADD":r=a+b;break;case "SUB":r=a-b;break;case "MUL":r=a*b;break;
-case "DIV":if(b===0){r="Cannot divide by zero";break;}r=a/b;break;
-case "AND":r=a&b;break;case "OR":r=a|b;break;case "XOR":r=a^b;break;
-case "NOT":r=~a;break;case "SHL":r=a<<1;break;case "SHR":r=a>>1;break;
+switch(operation){
+case "ADD":r=A+B;break;
+case "SUB":r=A-B;break;
+case "MUL":r=A*B;break;
+case "DIV":r=B===0?"Division by zero":A/B;break;
+case "AND":r=A&B;break;
+case "OR":r=A|B;break;
+case "XOR":r=A^B;break;
+case "NOT":r=~A;break;
+case "SHL":r=A<<1;break;
+case "SHR":r=A>>1;break;
 }
-let flags=typeof r==="number"?`<br><br>Zero flag: ${r===0?1:0}<br>Negative flag: ${r<0?1:0}<br>Carry/overflow: Not calculated for this operation`:"";
-document.getElementById("aluResult").innerHTML=`
-<h3>ALU Output</h3><div class="big">${r}</div>
-<p>${a} ${op} ${b}</p>
-${typeof r==="number"?`<p>Binary result: ${(r>>>0).toString(2)}</p>`:""}
-${flags}`;
+aluOut.innerHTML=`
+<h3 class="result">ALU Output</h3>
+<table>
+<tr><th>Input A</th><th>Input B</th><th>Operation</th><th>Result</th></tr>
+<tr><td>${A}</td><td>${B}</td><td>${operation}</td><td class="result">${r}</td></tr>
+</table>
+<p>A in binary: ${A.toString(2)}</p>
+<p>B in binary: ${B.toString(2)}</p>
+<p>Result in binary: ${Number(r).toString(2)}</p>
+`;
 }
-function resetALU(){document.getElementById("aluA").value=12;document.getElementById("aluB").value=5;document.getElementById("aluOp").value="ADD";document.getElementById("aluResult").innerHTML="ALU waiting for input."}
+function resetALU(){
+a.value=10;b.value=5;op.value="ADD";
+aluOut.innerHTML="ALU result will appear here.";
+}
 
-// ---------------- BOOTH MULTIPLICATION ----------------
-let boothSteps=[],boothIndex=0;
-function signedBits(v,n){return (v & ((1<<n)-1)).toString(2).padStart(n,"0")}
-function startBooth(){
-let m=Number(document.getElementById("boothM").value);
-let q=Number(document.getElementById("boothQ").value);
-let n=Math.max(4,Math.ceil(Math.log2(Math.max(Math.abs(m),Math.abs(q),1)))+2);
-if(n>16){alert("Use smaller inputs (up to 15-bit simulation).");return}
+/* BOOTH MULTIPLICATION */
+function runBooth(){
+let M=Number(bm.value),Q=Number(bq.value);
+let out=bOut;
+
+if(!Number.isInteger(M)||!Number.isInteger(Q)){
+out.innerHTML="<span class='error'>Enter integer operands.</span>";return;
+}
+if(Math.abs(M)>16383||Math.abs(Q)>16383){
+out.innerHTML="<span class='error'>Use operands between -16383 and 16383.</span>";return;
+}
+
+let n=Math.max(2,Math.ceil(Math.log2(Math.max(Math.abs(M),Math.abs(Q),1)))+1);
+n=Math.min(n,15);
+
 let mask=(1<<n)-1;
-let A=0,Q=q&mask,M=m&mask,q1=0;
-boothSteps=[{A,Q,q1,op:"Initial registers"}];
+let sign=1<<(n-1);
+let toSigned=x=>(x&sign)?x-(1<<n):x;
+let A=0,Qreg=Q&mask,Q1=0,Mreg=M&mask;
+let rows=[];
+
 for(let i=0;i<n;i++){
-let pair=((Q&1)<<1)|q1;
+let pair=(Qreg&1)*2+Q1;
 let action="No operation";
-if(pair===1){A=(A+M)&mask;action="A = A + M"}
-if(pair===2){A=(A-M)&mask;action="A = A − M"}
-boothSteps.push({A,Q,q1,op:`${action} (Q₀Q₋₁ = ${pair.toString(2).padStart(2,"0")})`});
-let sign=(A>>(n-1))&1;
-q1=Q&1;
-Q=(Q>>1)|( (A&1)<<(n-1));
-A=(A>>1)|(sign<<(n-1));
-boothSteps.push({A,Q,q1,op:"Arithmetic right shift"});
-}
-boothIndex=0;renderBooth();
-}
-function renderBooth(){
-let s=boothSteps[boothIndex];if(!s)return;
-let n=Math.max(4,Math.ceil(Math.log2(Math.max(Math.abs(Number(document.getElementById("boothM").value)),Math.abs(Number(document.getElementById("boothQ").value)),1)))+2);
-document.getElementById("boothRegs").innerHTML=`
-<h3>Step ${boothIndex} / ${boothSteps.length-1}</h3>
-<div class="regs">
-<div class="reg"><b>A</b><span>${signedBits(s.A,n)}</span><p class="small">(${s.A})</p></div>
-<div class="reg"><b>Q</b><span>${signedBits(s.Q,n)}</span><p class="small">(${s.Q})</p></div>
-<div class="reg"><b>Q−1</b><span>${s.q1}</span></div>
-</div><p>${s.op}</p>
-${boothIndex===boothSteps.length-1?`<div class="big">Product: ${Number(document.getElementById("boothM").value)*Number(document.getElementById("boothQ").value)}</div>`:""}`;
-document.getElementById("boothLog").innerHTML=boothSteps.slice(0,boothIndex+1).map((x,i)=>`<div>Step ${i}: ${x.op} | A=${x.A} Q=${x.Q} Q-1=${x.q1}</div>`).join("");
-}
-function boothStep(){if(boothSteps.length)boothIndex=Math.min(boothIndex+1,boothSteps.length-1),renderBooth()}
-function boothRun(){if(!boothSteps.length)startBooth();boothIndex=boothSteps.length-1;renderBooth()}
-function boothReset(){boothSteps=[];boothIndex=0;document.getElementById("boothRegs").innerHTML="Enter values and start simulation.";document.getElementById("boothLog").innerHTML=""}
+if(pair===1){A=(A+Mreg)&mask;action="A = A + M";}
+if(pair===2){A=(A-Mreg)&mask;action="A = A - M";}
 
-// ---------------- RESTORING DIVISION ----------------
-let divSteps=[],divIndex=0;
-function startDivision(){
-let q=Number(document.getElementById("divQ").value),m=Number(document.getElementById("divM").value);
-if(q<0||m<=0||!Number.isInteger(q)||!Number.isInteger(m)){alert("Use positive integers and a non-zero divisor.");return}
-let n=Math.max(4,q.toString(2).length);
-if(n>20){alert("Please use smaller values.");return}
-let A=0,Q=q,mask=(1<<n)-1;
-divSteps=[{A,Q,op:"Initial values"}];
+let combined=(A<<(n+1))|(Qreg<<1)|Q1;
+combined>>=1;
+A=(combined>>(n+1))&mask;
+Qreg=(combined>>1)&mask;
+Q1=combined&1;
+
+rows.push([i+1,action,toSigned(A),Qreg.toString(2).padStart(n,"0"),Q1]);
+}
+
+let product=M*Q;
+let html=`
+<h3 class="result">Booth Result: ${M} × ${Q} = ${product}</h3>
+<p>Binary product: ${product.toString(2)}</p>
+<table><tr><th>Step</th><th>Operation</th><th>A (signed)</th><th>Q</th><th>Q-1</th></tr>`;
+rows.forEach(r=>html+=`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td><td>${r[4]}</td></tr>`);
+html+="</table>";
+out.innerHTML=html;
+}
+function resetBooth(){
+bm.value=5;bq.value=-3;
+bOut.innerHTML="Booth steps will appear here.";
+}
+
+/* RESTORING DIVISION */
+function runDivision(){
+let dividend=Number(dd.value),divisor=Number(ds.value),out=dOut;
+
+if(!Number.isInteger(dividend)||!Number.isInteger(divisor)||dividend<0||divisor<=0){
+out.innerHTML="<span class='error'>Dividend must be non-negative and divisor must be positive.</span>";return;
+}
+if(dividend>65535||divisor>65535){
+out.innerHTML="<span class='error'>Please use numbers up to 65535.</span>";return;
+}
+
+let n=Math.max(1,dividend.toString(2).length);
+let A=0,Q=dividend,M=divisor;
+let rows=[];
+
 for(let i=0;i<n;i++){
-A=((A<<1)|(Q>>(n-1)))&mask;Q=(Q<<1)&mask;
-A=A-m;
-let success=A>=0;
-if(success)Q|=1;else A=A+m;
-divSteps.push({A,Q,op:success?"Subtract divisor; set Q₀=1":"Negative result; restore A; set Q₀=0"});
-}
-divIndex=0;renderDivision();
-}
-function renderDivision(){
-let s=divSteps[divIndex];if(!s)return;
-let n=Math.max(4,Number(document.getElementById("divQ").value).toString(2).length);
-document.getElementById("divRegs").innerHTML=`
-<h3>Step ${divIndex} / ${divSteps.length-1}</h3>
-<div class="regs"><div class="reg"><b>A (Remainder)</b><span>${s.A}</span><p>${signedBits(s.A,n)}</p></div>
-<div class="reg"><b>Q (Quotient)</b><span>${s.Q}</span><p>${signedBits(s.Q,n)}</p></div></div>
-<p>${s.op}</p>
-${divIndex===divSteps.length-1?`<div class="big">Quotient = ${Math.floor(Number(document.getElementById("divQ").value)/Number(document.getElementById("divM").value))}<br>Remainder = ${Number(document.getElementById("divQ").value)%Number(document.getElementById("divM").value}</div>`:""}`;
-document.getElementById("divLog").innerHTML=divSteps.slice(0,divIndex+1).map((x,i)=>`<div>Step ${i}: ${x.op} | A=${x.A} Q=${x.Q}</div>`).join("");
-}
-function divisionStep(){if(divSteps.length)divIndex=Math.min(divIndex+1,divSteps.length-1),renderDivision()}
-function divisionRun(){if(!divSteps.length)startDivision();divIndex=divSteps.length-1;renderDivision()}
-function divisionReset(){divSteps=[];divIndex=0;document.getElementById("divRegs").innerHTML="Enter values and start simulation.";document.getElementById("divLog").innerHTML=""}
+let incoming=(Q>>(n-1))&1;
+A=(A<<1)|incoming;
+Q=(Q<<1)&((1<<n)-1);
+A-=M;
 
-// ---------------- CACHE ----------------
-let cache=[],cacheAccesses=0,cacheHits=0;
-function initCache(){
-let lines=Number(document.getElementById("cacheLines").value);
-cache=Array.from({length:lines},()=>({valid:false,tag:null,block:null}));
-cacheAccesses=0;cacheHits=0;renderCache();
+let action;
+if(A<0){
+A+=M;
+Q&=~1;
+action="Restore A; Q₀ = 0";
+}else{
+Q|=1;
+action="Keep A; Q₀ = 1";
 }
-function resetCache(){initCache();document.getElementById("cacheResult").innerHTML="Cache cleared."}
-function renderCache(){
-let t=document.getElementById("cacheTable");
-t.innerHTML=`<tr><th>Line</th><th>Valid</th><th>Tag</th><th>Block</th></tr>`+
-cache.map((c,i)=>`<tr><td>${i}</td><td>${c.valid?1:0}</td><td>${c.valid?c.tag:"—"}</td><td>${c.valid?c.block:"—"}</td></tr>`).join("");
+rows.push([i+1,A,Q.toString(2).padStart(n,"0"),action]);
 }
-function accessCache(){
-let addr=Number(document.getElementById("cacheAddress").value);
-let lines=Number(document.getElementById("cacheLines").value);
-let bs=Number(document.getElementById("cacheBlock").value);
-if(addr<0||!Number.isInteger(addr)){alert("Enter a non-negative integer address.");return}
-if(cache.length!==lines)initCache();
-let block=Math.floor(addr/bs),line=block%lines,tag=Math.floor(block/lines);
-let c=cache[line],hit=c.valid&&c.tag===tag;
-cacheAccesses++;if(hit)cacheHits++;
-if(!hit)cache[line]={valid:true,tag,block};
-document.getElementById("cacheResult").innerHTML=`
-<h3 class="${hit?"hit":"miss"}">${hit?"CACHE HIT ✓":"CACHE MISS ✗"}</h3>
-<p>Address: ${addr} | Block: ${block} | Cache line: ${line} | Tag: ${tag}</p>
-<p>Block offset: ${addr%bs}</p>
-<p>Hits: ${cacheHits} / ${cacheAccesses} | Hit rate: ${(cacheHits/cacheAccesses*100).toFixed(1)}%</p>`;
-renderCache();
-}
-initCache();
 
-// ---------------- PIPELINE ----------------
-let pipeInstructions=[],pipeCycle=0,pipeStarted=false;
-const stages=["IF","ID","EX","MEM","WB"];
-function pipelineStart(){
-pipeInstructions=document.getElementById("pipeInput").value.split("\n").map(x=>x.trim()).filter(Boolean);
-pipeCycle=0;pipeStarted=true;renderPipeline();
+let html=`
+<h3 class="result">${dividend} ÷ ${divisor}</h3>
+<p>Quotient: <b>${Math.floor(dividend/divisor)}</b></p>
+<p>Remainder: <b>${dividend%divisor}</b></p>
+<table><tr><th>Step</th><th>A</th><th>Q</th><th>Operation</th></tr>`;
+rows.forEach(r=>html+=`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="mono">${r[2]}</td><td>${r[3]}</td></tr>`);
+html+="</table>";
+out.innerHTML=html;
 }
-function renderPipeline(){
-if(!pipeStarted)return;
-let cycles=pipeInstructions.length+4;
-let html=`<h3>Clock Cycle ${pipeCycle} / ${cycles}</h3>`;
-html+=`<div style="overflow:auto"><table><tr><th>Instruction</th>`;
+function resetDivision(){
+dd.value=13;ds.value=3;
+dOut.innerHTML="Division steps will appear here.";
+}
+
+/* CACHE */
+let cacheState={};
+function runCache(){
+let memory=Number(mem.value),cache=Number(cs.value),block=Number(bs.value),address=Number(ca.value),out=cacheOut;
+
+if(!Number.isInteger(memory)||!Number.isInteger(cache)||!Number.isInteger(block)||!Number.isInteger(address)||
+memory<=0||cache<=0||block<=0||address<0||address>=memory||
+memory%block!==0||cache%block!==0||cache>memory){
+out.innerHTML="<span class='error'>Invalid parameters. Ensure memory/cache sizes are divisible by block size and address is in range.</span>";return;
+}
+
+let lines=cache/block;
+let memoryBlocks=memory/block;
+let blockNumber=Math.floor(address/block);
+let index=blockNumber%lines;
+let tag=Math.floor(blockNumber/lines);
+let offset=address%block;
+let offsetBits=Math.log2(block);
+let indexBits=Math.log2(lines);
+let tagBits=Math.log2(memoryBlocks/lines);
+let hit=cacheState[index]===blockNumber;
+cacheState[index]=blockNumber;
+
+out.innerHTML=`
+<h3 class="${hit?'result':'error'}">${hit?"CACHE HIT":"CACHE MISS"}</h3>
+<table>
+<tr><th>Parameter</th><th>Value</th></tr>
+<tr><td>Memory Blocks</td><td>${memoryBlocks}</td></tr>
+<tr><td>Cache Lines</td><td>${lines}</td></tr>
+<tr><td>Block Number</td><td>${blockNumber}</td></tr>
+<tr><td>Cache Index</td><td>${index}</td></tr>
+<tr><td>Tag</td><td>${tag}</td></tr>
+<tr><td>Block Offset</td><td>${offset}</td></tr>
+<tr><td>Tag Bits</td><td>${tagBits}</td></tr>
+<tr><td>Index Bits</td><td>${indexBits}</td></tr>
+<tr><td>Offset Bits</td><td>${offsetBits}</td></tr>
+</table>
+<p>Accessing the same memory block again will result in a cache hit.</p>
+`;
+}
+function resetCache(){
+mem.value=1024;cs.value=64;bs.value=4;ca.value=20;
+cacheState={};
+cacheOut.innerHTML="Cache result will appear here.";
+}
+
+/* PIPELINE */
+function runPipeline(){
+let n=Number(pn.value),out=pOut;
+if(!Number.isInteger(n)||n<1||n>30){
+out.innerHTML="<span class='error'>Enter between 1 and 30 instructions.</span>";return;
+}
+let stages=["IF","ID","EX","MEM","WB"];
+let cycles=n+4;
+let html=`<h3 class="result">Pipeline Schedule</h3>
+<p>Instructions: ${n} | Total cycles: ${cycles}</p>
+<table><tr><th>Instruction</th>`;
 for(let c=1;c<=cycles;c++)html+=`<th>C${c}</th>`;
-html+=`</tr>`;
-pipeInstructions.forEach((ins,i)=>{
-html+=`<tr><td style="text-align:left;min-width:110px">${ins}</td>`;
+html+="</tr>";
+for(let i=1;i<=n;i++){
+html+=`<tr><td>I${i}</td>`;
 for(let c=1;c<=cycles;c++){
-let stage=c-i;
-let name=stages[stage-1];
-html+=`<td><div class="stage ${c<=pipeCycle&&stage>=1&&stage<=5?"done":""} ${c===pipeCycle&&stage>=1&&stage<=5?"on":""}">${stage>=1&&stage<=5?name:""}</div></td>`;
+let s=c-i;
+html+=s>=0&&s<5?`<td class="result">${stages[s]}</td>`:`<td>-</td>`;
 }
 html+="</tr>";
-});
-html+="</table></div>";
-document.getElementById("pipeResult").innerHTML=html;
-document.getElementById("pipeLog").innerHTML=`<div>Total instructions: ${pipeInstructions.length}</div><div>Ideal cycles: ${cycles}</div><div>Current cycle: ${pipeCycle}</div><div>Ideal CPI: ${(cycles/Math.max(1,pipeInstructions.length)).toFixed(2)}</div>`;
 }
+html+="</table>";
+out.innerHTML=html;
+}
+function resetPipeline(){
+pn.value=5;pOut.innerHTML="Pipeline will appear here.";
+}
+
+/* DMA */
+function runDMA(){
+let total=Number(dt.value),chunk=Number(dc.value),out=dmaOut;
+if(!Number.isInteger(total)||!Number.isInteger(chunk)||total<=0||chunk<=0){
+out.innerHTML="<span class='error'>Enter positive integer values.</span>";return;
+}
+if(total>10000000){
+out.innerHTML="<span class='error'>Maximum transfer size is 10,000,000 bytes.</span>";return;
+}
+
+let transferred=0,cycle=0,html=`
+<h3 class="result">DMA Transfer</h3>
+<p>Total data: ${total} bytes</p>
+<table><tr><th>Cycle</th><th>Transferred</th><th>Remaining</th><th>Status</th></tr>`;
+
+while(transferred<total){
+cycle++;
+transferred+=Math.min(chunk,total-transferred);
+html+=`<tr><td>${cycle}</td><td>${transferred}</td><td>${total-transferred}</td><td>${transferred===total?"Completed":"Transferring"}</td></tr>`;
+}
+html+="</table>";
+html+=`<p class="result">Transfer completed in ${cycle} cycles.</p>`;
+out.innerHTML=html;
+}
+function resetDMA(){
+dt.value=1024;dc.value=128;
+dmaOut.innerHTML="DMA result will appear here.";
+}
+</script>
+</body>
+</html>

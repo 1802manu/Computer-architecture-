@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COA | Learn Computer Architecture</title>
+
+<style>
+:root {
+  --bg: #0b1020;
+  --panel: #141b30;
+  --panel2: #1b2540;
+  --text: #f1f5ff;
+  --muted: #9caecc;
+  --primary: #79a9ff;
+  --cyan: #54e5df;
+  --purple: #b89cff;
+  --pink: #ff82bd;
+  --yellow: #ffdb77;
+  --green: #77e6a1;
+  --border: rgba(255,255,255,.09);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+header {
+  padding: 24px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  background: rgba(11,16,32,.95);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--cyan);
+}
+
+.logo span {
+  color: white;
+}
+
+.header-right {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.hero {
+  padding: 55px 6% 35px;
+  background:
+    radial-gradient(circle at 80% 20%, #263567 0%, transparent 40%),
+    radial-gradient(circle at 10% 90%, #182a4d 0%, transparent 35%);
+}
+
+.hero-tag {
+  color: var(--cyan);
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.hero h1 {
+  font-size: clamp(32px, 5vw, 58px);
+  line-height: 1.12;
+  margin: 14px 0;
+}
+
+.hero h1 span {
+  color: var(--primary);
+}
+
+.hero p {
+  color: var(--muted);
+  max-width: 680px;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.primary-btn, .secondary-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.primary-btn {
+  background: var(--primary);
+  color: #071126;
+}
+
+.secondary-btn {
+  background: var(--panel2);
+  color: white;
+  border: 1px solid var(--border);
+}
+
+.stats {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.stat {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  padding: 12px 18px;
+  border-radius: 12px;
+  min-width: 110px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 20px;
+  color: var(--cyan);
+}
+
+.stat small {
+  color: var(--muted);
+}
+
+.search-area {
+  padding: 0 6%;
+  margin-top: 20px;
+}
+
+.search-area input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  background: var(--panel);
+  color: white;
+  border: 1px solid var(--border);
+  outline: none;
+}
+
+.search-area input:focus {
+  border-color: var(--primary);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 25px;
+  padding: 25px 6%;
+}
+
+.sidebar {
+  position: sticky;
+  top: 95px;
+  height: fit-content;
+}
+
+.sidebar h3 {
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 15px 0;
+}
+
+.module-btn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--muted);
+  padding: 13px;
+  margin: 5px 0;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: .2s;
+}
+
+.module-btn:hover, .module-btn.active {
+  background: var(--panel);
+  color: white;
+  border-color: var(--border);
+}
+
+.module-btn.active {
+  border-left: 3px solid var(--cyan);
+}
+
+.module-btn strong {
+  display: block;
+}
+
+.module-btn small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.progress-card {
+  background: var(--panel);
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-top: 25px;
+}
+
+.progress-bar {
+  height: 7px;
+  background: #29334e;
+  border-radius: 10px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--cyan);
+  width: 0%;
+  transition: .3s;
+}
+
+#progressText {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.content {
+  min-width: 0;
+}
+
+.module-heading {
+  background: linear-gradient(130deg, #1a2b50, #17213b);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 26px;
+  margin-bottom: 20px;
+}
+
+.module-heading small {
+  color: var(--cyan);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.module-heading h2 {
+  font-size: 30px;
+  margin: 6px 0;
+}
+
+.module-heading p {
+  color: var(--muted);
+}
+
+.topic {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.topic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 18px 20px;
+  cursor: pointer;
+}
+
+.topic-header h3 {
+  font-size: 17px;
+}
+
+.topic-header:hover {
+  background: rgba(255,255,255,.025);
+}
+
+.topic-header span {
+  color: var(--cyan);
+  font-size: 22px;
+}
+
+.topic-body {
+  display: none;
+  padding: 0 20px 22px;
+  color: #d6def2;
+}
+
+.topic.open .topic-body {
+  display: block;
+}
+
+.topic-body p {
+  margin: 12px 0;
+}
+
+.topic-body h4 {
+  color: var(--yellow);
+  margin-top: 15px;
+}
+
+.simple {
+  background: #192641;
+  border-left: 3px solid var(--cyan);
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.example {
+  background: #242039;
+  border-left: 3px solid var(--purple);
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.warning {
+  background: #342b22;
+  border-left: 3px solid var(--yellow);
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin: 12px 0;
+}
+
+.diagram {
+  background: #0d1428;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 15px;
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+.diagram-title {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.diagram-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-width: 500px;
+}
+
+.dbox {
+  padding: 14px 10px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid;
+  min-width: 100px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.blue { background: #1c2d50; border-color: #659aff; color: #a6c5ff; }
+.teal { background: #16383a; border-color: #54e5df; color: #8ff4ed; }
+.purple { background: #302546; border-color: #b89cff; color: #d1bfff; }
+.orange { background: #3a2d20; border-color: #ffdb77; color: #ffe59c; }
+.pink { background: #3a2031; border-color: #ff82bd; color: #ffb8d9; }
+.arrow {
+  color: var(--cyan);
+  font-size: 22px;
+}
+
+.stack-visual {
+  width: 200px;
+  margin: 15px auto;
+  display: flex;
+  flex-direction: column-reverse;
+  text-align: center;
+}
+
+.stack-visual div {
+  padding: 10px;
+  border: 1px solid var(--purple);
+  background: #2d2344;
+  margin: 2px;
+  border-radius: 7px;
+}
+
+.memory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-top: 12px;
+}
+
+.memory-grid div {
+  background: #1b2c4b;
+  border: 1px solid #5274a8;
+  text-align: center;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.pipeline {
+  display: flex;
+  gap: 5px;
+  min-width: 450px;
+}
+
+.pipeline div {
+  flex: 1;
+  padding: 13px 5px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.quiz {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.quiz h3 {
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+
+.question {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.question p {
+  margin-bottom: 10px;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 11px;
+  margin: 6px 0;
+  border-radius: 8px;
+  background: var(--panel2);
+  color: white;
+  border: 1px solid transparent;
+}
+
+.option:hover {
+  border-color: var(--primary);
+}
+
+.option.correct {
+  background: #183b2c;
+  border-color: var(--green);
+}
+
+.option.wrong {
+  background: #40252e;
+  border-color: var(--pink);
+}
+
+.feedback {
+  font-size: 13px;
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.quiz-result {
+  font-size: 20px;
+  color: var(--cyan);
+  margin-top: 15px;
+}
+
+footer {
+  padding: 35px 6%;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.hide {
+  display: none !important;
+}
+
+@media(max-width:850px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+  }
+  .module-btn {
+    width: 48%;
+    display: inline-block;
+    vertical-align: top;
+  }
+  .progress-card {
+    margin-top: 10px;
+  }
+}
+
+@media(max-width:500px) {
+  header {
+    padding: 15px 5%;
+  }
+  .hero {
+    padding: 35px 5%;
+  }
+  .layout {
+    padding: 20px 5%;
+  }
+  .module-btn {
+    width: 100%;
+  }
+  .module-heading h2 {
+    font-size: 24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">COA<span>LAB</span> ⚡</div>
+  <div class="header-right">Learn it visually</div>
+</header>
+
+<section class="hero">
+  <div class="hero-tag">COMPUTER ORGANIZATION & ARCHITECTURE</div>
+  <h1>Understand computers.<br><span>One concept at a time.</span></h1>
+  <p>
+    Forget confusing textbook language. Learn how a computer thinks,
+    stores information, performs calculations and runs programs through
+    simple explanations and visual examples.
+  </p>
+
+  <div class="hero-buttons">
+    <button class="primary-btn" onclick="selectModule(0)">Start Learning →</button>
+    <button class="secondary-btn" onclick="showQuiz()">Take a Quiz</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><strong>4</strong><small>Modules</small></div>
+    <div class="stat"><strong>45</strong><small>Sessions</small></div>
+    <div class="stat"><strong>Beginner</strong><small>Friendly learning</small></div>
+  </div>
+</section>
+
+<div class="search-area">
+  <input id="search" type="text" placeholder="🔎 Search topics like cache, registers, Booth, DMA..." oninput="searchTopics()">
+</div>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <h3>Course Modules</h3>
+
+  <button class="module-btn active" onclick="selectModule(0)">
+    <strong>🖥️ Module 1</strong>
+    <small>Basic Structures of Computers</small>
+  </button>
+
+  <button class="module-btn" onclick="selectModule(1)">
+    <strong>📦 Module 2</strong>
+    <small>ISA & Memory Unit</small>
+  </button>
+
+  <button class="module-btn" onclick="selectModule(2)">
+    <strong>➗ Module 3</strong>
+    <small>Arithmetic & I/O Units</small>
+  </button>
+
+  <button class="module-btn" onclick="selectModule(3)">
+    <strong>⚙️ Module 4</strong>
+    <small>Processing Unit & Pipelining</small>
+  </button>
+
+  <div class="progress-card">
+    <strong>📈 Your Progress</strong>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div id="progressText">0 topics completed</div>
+    <button class="secondary-btn" style="margin-top:10px;width:100%" onclick="resetProgress()">Reset Progress</button>
+  </div>
+</aside>
+
+<main class="content" id="mainContent"></main>
+
+</div>
+
+<footer>
+  COALAB • Computer Organization & Architecture • Learn at your own pace
+</footer>
+
+<script>
+const modules = [
+
+/* ===================== MODULE 1 ===================== */
+
+{
+title: "Basic Structures of Computers",
+subtitle: "How a computer is built and how its parts communicate.",
+topics: [
+
+{
+title: "1. What is Computer Organization?",
+body: `
+<div class="simple"><b>In simple terms:</b> Computer organization is about how the physical parts of a computer work together to run programs.</div>
+<p>Imagine a computer as a restaurant.</p>
+<ul>
+<li>CPU = Chef</li>
+<li>Memory = Kitchen counter</li>
+<li>Storage = Pantry</li>
+<li>Input = Customer order</li>
+<li>Output = Finished food</li>
+</ul>
+<p>Computer architecture describes what the computer is designed to do. Organization explains how the hardware actually makes it happen.</p>
+`
+},
+
+{
+title: "2. Computer Types & Functional Units",
+body: `
+<div class="simple">A computer has different components that each perform a specific job.</div>
+
+<div class="diagram">
+<div class="diagram-title">Basic Computer System</div>
+<div class="diagram-row">
+<div class="dbox blue">INPUT<br>Keyboard, Mouse</div>
+<div class="arrow">→</div>
+<div class="dbox teal">CPU<br>Processing</div>
+<div class="arrow">→</div>
+<div class="dbox purple">OUTPUT<br>Screen</div>
+</div>
+<div class="diagram-row">
+<div class="dbox orange">MEMORY<br>RAM</div>
+<div class="dbox pink">STORAGE<br>SSD / HDD</div>
+</div>
+</div>
+
+<h4>Five important parts</h4>
+<ul>
+<li><b>Input Unit:</b> Sends data into the computer.</li>
+<li><b>Output Unit:</b> Displays the result.</li>
+<li><b>Memory:</b> Holds data the CPU is currently using.</li>
+<li><b>ALU:</b> Performs arithmetic and logical operations.</li>
+<li><b>Control Unit:</b> Directs the operations of the computer.</li>
+</ul>
+
+<p><b>Types of computers:</b> Microcomputers, workstations, servers, mainframes and supercomputers.</p>
+`
+},
+
+{
+title: "3. CPU, Registers & Processor-Memory Connection",
+body: `
+<div class="simple">The CPU is the brain of the computer. It executes instructions and controls operations.</div>
+
+<div class="diagram">
+<div class="diagram-title">Inside the CPU</div>
+<div class="diagram-row">
+<div class="dbox blue">Control Unit<br>CU</div>
+<div class="dbox teal">ALU<br>Calculations</div>
+<div class="dbox purple">Registers<br>Fast storage</div>
+</div>
+</div>
+
+<h4>What is a register?</h4>
+<p>A register is a tiny, extremely fast storage location inside the CPU.</p>
+<p>Registers hold data, addresses and instructions temporarily while the CPU is working.</p>
+
+<ul>
+<li><b>PC:</b> Program Counter — address of the next instruction.</li>
+<li><b>IR:</b> Instruction Register — holds the current instruction.</li>
+<li><b>MAR:</b> Memory Address Register — stores the address being accessed.</li>
+<li><b>MDR:</b> Memory Data Register — stores data moving to or from memory.</li>
+<li><b>ACC:</b> Accumulator — often used to store calculation results.</li>
+</ul>
+
+<div class="diagram">
+<div class="diagram-title">CPU communicating with Memory</div>
+<div class="diagram-row">
+<div class="dbox teal">CPU<br>Registers</div>
+<div class="arrow">⇄</div>
+<div class="dbox orange">RAM<br>Memory</div>
+</div>
+</div>
+<p>Data and instructions travel between the CPU and memory through communication pathways called buses.</p>
+`
+},
+
+{
+title: "4. Bus Structure & Processor Clock",
+body: `
+<div class="simple">A bus is like a road that carries information between computer parts.</div>
+
+<div class="diagram">
+<div class="diagram-title">Three types of buses</div>
+<div class="diagram-row">
+<div class="dbox blue">Address Bus<br>Where?</div>
+<div class="dbox teal">Data Bus<br>What?</div>
+<div class="dbox purple">Control Bus<br>How?</div>
+</div>
+</div>
+
+<ul>
+<li><b>Address Bus:</b> Carries the location of the data.</li>
+<li><b>Data Bus:</b> Carries the actual data.</li>
+<li><b>Control Bus:</b> Carries commands like Read and Write.</li>
+</ul>
+
+<h4>What is clock speed?</h4>
+<p>The CPU clock controls the timing of operations. It is measured in Hz, commonly GHz.</p>
+<p>1 GHz = 1 billion clock cycles per second.</p>
+
+<div class="example">Higher clock speed can mean more cycles per second, but performance also depends on the CPU design and work done per cycle.</div>
+`
+},
+
+{
+title: "5. Computer Performance Equation",
+body: `
+<div class="simple">How long does a CPU take to execute a program?</div>
+
+<div class="example">
+<b>CPU Execution Time =</b><br>
+Instruction Count × CPI × Clock Cycle Time
+</div>
+
+<ul>
+<li><b>Instruction Count:</b> Number of instructions executed.</li>
+<li><b>CPI:</b> Average cycles required per instruction.</li>
+<li><b>Clock Cycle Time:</b> Time for one clock cycle.</li>
+</ul>
+
+<h4>Example</h4>
+<p>A program has 1,000 instructions, CPI = 2, and cycle time = 1 ns.</p>
+
+<div class="example">
+Execution time = 1000 × 2 × 1 ns<br>
+<b>Execution time = 2000 ns</b>
+</div>
+
+`
+},
+
+{
+title: "6. Number Representation",
+body: `
+<div class="simple">Computers store everything as binary: 0 and 1.</div>
+
+<h4>Decimal to Binary example</h4>
+<p>Convert decimal 13 into binary:</p>
+
+<div class="example">
+13 ÷ 2 = 6 remainder 1<br>
+6 ÷ 2 = 3 remainder 0<br>
+3 ÷ 2 = 1 remainder 1<br>
+1 ÷ 2 = 0 remainder 1<br>
+<br>
+Read remainders bottom to top:<br>
+<b>13 = 1101₂</b>
+</div>
+
+<h4>Binary place values</h4>
+<div class="diagram">
+<div class="diagram-row">
+<div class="dbox blue">8</div>
+<div class="dbox teal">4</div>
+<div class="dbox purple">2</div>
+<div class="dbox orange">1</div>
+</div>
+<div class="diagram-row" style="margin-top:8px">
+<div class="dbox blue">1</div>
+<div class="dbox teal">1</div>
+<div class="dbox purple">0</div>
+<div class="dbox orange">1</div>
+</div>
+<p style="text-align:center">8 + 4 + 0 + 1 = 13</p>
+</div>
+
+<p>Other number systems:</p>
+<ul>
+<li>Binary: base 2</li>
+<li>Decimal: base 10</li>
+<li>Octal: base 8</li>
+<li>Hexadecimal: base 16 (0–9, A–F)</li>
+</ul>
+`
+},
+
+{
+title: "7. Signed Numbers & Overflow",
+body: `
+<div class="simple">Signed numbers represent both positive and negative values.</div>
+
+<h4>Two's complement</h4>
+<p>To represent a negative binary number:</p>
+<ol>
+<li>Write the positive number in binary.</li>
+<li>Flip all bits (0 becomes 1, 1 becomes 0).</li>
+<li>Add 1.</li>
+</ol>
+
+<div class="example">
++5 in 4-bit binary = 0101<br>
+Flip the bits = 1010<br>
+Add 1 = 1011<br>
+<b>Therefore, -5 = 1011</b> (4-bit two's complement)
+</div>
+
+<h4>Overflow</h4>
+<p>Overflow happens when the result is too large or too small for the available number of bits.</p>
+<div class="warning">Example: In 4-bit signed representation, the range is −8 to +7. Trying to represent +9 causes overflow.</div>
+`
+},
+
+{
+title: "8. Byte Addressability & Endianness",
+body: `
+<div class="simple">Byte-addressable memory means every byte has its own address.</div>
+
+<h4>Big Endian vs Little Endian</h4>
+<p>Suppose the 32-bit number is <b>0x12345678</b>.</p>
+
+<div class="diagram">
+<div class="diagram-title">How bytes are placed in memory</div>
+<p>Address →</p>
+<div class="diagram-row">
+<div class="dbox blue">1000<br>12</div>
+<div class="dbox teal">1001<br>34</div>
+<div class="dbox purple">1002<br>56</div>
+<div class="dbox orange">1003<br>78</div>
+</div>
+<p><b>Big Endian:</b> Most significant byte first.</p>
+</div>
+
+<div class="diagram">
+<div class="diagram-row">
+<div class="dbox orange">1000<br>78</div>
+<div class="dbox purple">1001<br>56</div>
+<div class="dbox teal">1002<br>34</div>
+<div class="dbox blue">1003<br>12</div>
+</div>
+<p><b>Little Endian:</b> Least significant byte first.</p>
+</div>
+
+<div class="simple">The number itself does not change. Only how its bytes are arranged in memory changes.</div>
+`
+},
+
+{
+title: "9. Memory Operations & Register Transfer Notation",
+body: `
+<div class="simple">The CPU must move data from one place to another and perform operations on it.</div>
+
+<h4>Memory operations</h4>
+<ul>
+<li><b>Read:</b> Get data from memory.</li>
+<li><b>Write:</b> Store data into memory.</li>
+</ul>
+
+<h4>Register Transfer Notation (RTN)</h4>
+<p>RTN is a short way of showing how data moves between registers.</p>
+
+<div class="example">
+R1 ← R2<br>
+Meaning: Copy the contents of R2 into R1.
+</div>
+
+<div class="example">
+R3 ← R1 + R2<br>
+Meaning: Add R1 and R2, then store the result in R3.
+</div>
+
+<h4>Instruction formats</h4>
+<ul>
+<li><b>3-address:</b> ADD R1, R2, R3 → R1 = R2 + R3</li>
+<li><b>2-address:</b> ADD R1, R2 → R1 = R1 + R2</li>
+<li><b>1-address:</b> ADD X → ACC = ACC + X</li>
+</ul>
+`
+}
+
+]
+},
+
+/* ===================== MODULE 2 ===================== */
+
+{
+title: "Instruction Set Architecture & Memory Unit",
+subtitle: "How a CPU understands instructions and how memory stores information.",
+topics: [
+
+{
+title: "1. What is Instruction Set Architecture (ISA)?",
+body: `
+<div class="simple">ISA is the set of commands a processor understands.</div>
+<p>Think of ISA as a language used to communicate with the CPU.</p>
+
+<div class="example">
+ADD → Add numbers<br>
+SUB → Subtract numbers<br>
+LOAD → Bring data from memory<br>
+STORE → Save data to memory
+</div>
+
+<p>RISC and CISC are two ways of designing instruction sets.</p>
+<ul>
+<li><b>RISC:</b> Simple, usually fixed-length instructions. Example: ARM, RISC-V.</li>
+<li><b>CISC:</b> More complex instructions, often variable length. Example: x86.</li>
+</ul>
+`
+},
+
+{
+title: "2. Addressing Modes",
+body: `
+<div class="simple">Addressing modes tell the CPU where to find the data needed by an instruction.</div>
+
+<h4>Immediate Addressing</h4>
+<div class="example">MOV R1, #5<br>The value 5 is directly inside the instruction.</div>
+
+<h4>Register Addressing</h4>
+<div class="example">ADD R1, R2<br>The data is already in register R2.</div>
+
+<h4>Direct / Absolute Addressing</h4>
+<div class="example">LOAD R1, [500]<br>Go to memory address 500 and get the value.</div>
+
+<h4>Indirect Addressing</h4>
+<div class="example">LOAD R1, [R2]<br>R2 contains an address. Go to that address to get the value.</div>
+
+<h4>Index Addressing</h4>
+<div class="example">EA = Base Address + Index<br>Useful for arrays.</div>
+
+<h4>Relative Addressing</h4>
+<div class="example">EA = PC + Offset<br>The address is calculated relative to the Program Counter.</div>
+
+<h4>Auto Increment / Decrement</h4>
+<p>Automatically increases or decreases a register after or before accessing data. Useful for reading arrays or moving through memory.</p>
+`
+},
+
+{
+title: "3. Stack & Stack Operations",
+body: `
+<div class="simple">A stack is like a pile of plates. You add and remove plates only from the top.</div>
+
+<div class="diagram">
+<div class="diagram-title">Stack — Last In, First Out (LIFO)</div>
+<div class="stack-visual">
+<div>Bottom: A</div>
+<div>B</div>
+<div>C</div>
+<div style="border-color:var(--cyan);color:var(--cyan)">TOP: D</div>
+</div>
+</div>
+
+<h4>Two operations</h4>
+<ul>
+<li><b>PUSH:</b> Add an item to the top.</li>
+<li><b>POP:</b> Remove the top item.</li>
+</ul>
+
+<div class="example">
+Push A → Push B → Push C<br>
+Stack top = C<br>
+Pop → C removed<br>
+Stack top = B
+</div>
+
+<p>Stacks are used in function calls, recursion, expression evaluation and temporary storage.</p>
+`
+},
+
+{
+title: "4. Subroutines & Subroutine Nesting",
+body: `
+<div class="simple">A subroutine is a small program that performs a specific task and can be called whenever needed.</div>
+
+<p>Example: A function to calculate square of a number.</p>
+
+<div class="diagram">
+<div class="diagram-title">Subroutine Execution</div>
+<div class="diagram-row">
+<div class="dbox blue">Main Program</div>
+<div class="arrow">→</div>
+<div class="dbox teal">Call Function</div>
+<div class="arrow">→</div>
+<div class="dbox purple">Execute</div>
+</div>
+<div class="diagram-row" style="margin-top:8px">
+<div class="dbox orange">Return to Main</div>
+</div>
+</div>
+
+<p>The CPU saves the return address so it knows where to continue after the function finishes.</p>
+<p><b>Nesting:</b> A subroutine can call another subroutine. The stack stores return addresses so the CPU can return in the correct order.</p>
+`
+},
+
+{
+title: "5. Memory Chips & Organization",
+body: `
+<div class="simple">Memory is a collection of storage locations. Each location has an address.</div>
+
+<h4>Memory notation</h4>
+<p>16 × 8 memory means:</p>
+<ul>
+<li>16 storage locations</li>
+<li>Each location stores 8 bits</li>
+<li>Total capacity = 128 bits = 16 bytes</li>
+</ul>
+
+<div class="diagram">
+<div class="diagram-title">16 × 8 Memory Example</div>
+<div class="memory-grid">
+${Array.from({length:16},(_,i)=>`<div>${i.toString(16).toUpperCase()} : 8 bits</div>`).join("")}
+</div>
+</div>
+
+<h4>RAM types</h4>
+<ul>
+<li><b>SRAM:</b> Fast, expensive, does not need refreshing while powered.</li>
+<li><b>DRAM:</b> Dense and cheaper, needs refreshing periodically.</li>
+</ul>
+`
+},
+
+{
+title: "6. ROM, Speed, Size & Cost",
+body: `
+<div class="simple">Memory technologies are chosen based on speed, capacity, cost and whether they need to retain data without power.</div>
+
+<ul>
+<li><b>RAM:</b> Temporary working memory. Normally volatile.</li>
+<li><b>ROM:</b> Non-volatile memory that stores data even without power.</li>
+<li><b>Cache:</b> Small, fast memory close to the CPU.</li>
+<li><b>SSD/HDD:</b> Long-term storage.</li>
+</ul>
+
+<div class="example">Usually, the faster the memory, the more expensive it is per bit and the smaller its capacity tends to be.</div>
+`
+},
+
+{
+title: "7. Memory Hierarchy",
+body: `
+<div class="simple">A computer uses several levels of memory to balance speed, capacity and cost.</div>
+
+<div class="diagram">
+<div class="diagram-title">Memory Hierarchy (Fast → Slow)</div>
+<div style="max-width:350px;margin:auto;text-align:center">
+<div class="dbox pink" style="margin:5px">Registers — Fastest, smallest</div>
+<div class="dbox purple" style="margin:5px">Cache</div>
+<div class="dbox teal" style="margin:5px">RAM</div>
+<div class="dbox blue" style="margin:5px">SSD</div>
+<div class="dbox orange" style="margin:5px">HDD — Slowest, largest</div>
+</div>
+</div>
+
+<p>As we move downward:</p>
+<ul>
+<li>Capacity generally increases.</li>
+<li>Speed generally decreases.</li>
+<li>Cost per bit generally decreases.</li>
+</ul>
+`
+},
+
+{
+title: "8. Cache Memory",
+body: `
+<div class="simple">Cache is a small, fast memory that keeps frequently used data close to the CPU.</div>
+
+<p>Imagine you are studying. Your desk has the book you use most (cache). Your bookshelf is RAM. Your storage room is SSD.</p>
+
+<div class="diagram">
+<div class="diagram-title">Cache Memory Flow</div>
+<div class="diagram-row">
+<div class="dbox blue">CPU</div>
+<div class="arrow">↔</div>
+<div class="dbox pink">CACHE</div>
+<div class="arrow">↔</div>
+<div class="dbox teal">RAM</div>
+</div>
+</div>
+
+<ul>
+<li><b>Cache Hit:</b> Data found in cache — fast.</li>
+<li><b>Cache Miss:</b> Data not found — must fetch from slower memory.</li>
+</ul>
+
+<h4>Why cache works</h4>
+<ul>
+<li><b>Temporal locality:</b> Recently used data may be used again.</li>
+<li><b>Spatial locality:</b> Nearby data may be used soon.</li>
+</ul>
+`
+},
+
+{
+title: "9. Cache Mapping Techniques",
+body: `
+<div class="simple">Mapping decides where a block from main memory can be placed inside the cache.</div>
+
+<h4>Direct Mapping</h4>
+<p>Each memory block has exactly one possible cache location.</p>
+<div class="example">Cache line = Memory block number MOD Number of cache lines</div>
+<p>Simple and fast, but blocks can compete for the same cache line.</p>
+
+<h4>Fully Associative Mapping</h4>
+<p>Any memory block can go into any cache line. Flexible, but searching is more complex.</p>
+
+<h4>Set Associative Mapping</h4>
+<p>Cache is divided into sets. A memory block maps to one set, but can occupy any line within that set.</p>
+
+<div class="diagram">
+<div class="diagram-title">3 Mapping Choices</div>
+<div class="diagram-row">
+<div class="dbox blue">Direct<br>One place</div>
+<div class="dbox teal">Associative<br>Any place</div>
+<div class="dbox purple">Set Associative<br>One set</div>
+</div>
+</div>
+`
+}
+
+]
+},
+
+/* ===================== MODULE 3 ===================== */
+
+{
+title: "Arithmetic & Input/Output Units",
+subtitle: "How computers calculate numbers and communicate with devices.",
+topics: [
+
+{
+title: "1. Carry Look-Ahead Adder",
+body: `
+<div class="simple">A carry look-ahead adder is designed to perform binary addition faster by calculating carry signals in advance.</div>
+
+<p>In normal binary addition, a carry may have to travel through several bit positions. This takes time.</p>
+
+<h4>Two important signals</h4>
+<ul>
+<li><b>Generate (G):</b> A bit position creates a carry.</li>
+<li><b>Propagate (P):</b> A bit position passes a carry forward.</li>
+</ul>
+
+<div class="example">
+P = A XOR B<br>
+G = A AND B<br><br>
+Carry: C(i+1) = G(i) + P(i)C(i)
+</div>
+
+<p>Carry look-ahead logic calculates carries in parallel to reduce waiting time.</p>
+`
+},
+
+{
+title: "2. Booth Multiplication Algorithm",
+body: `
+<div class="simple">Booth's algorithm multiplies signed binary numbers efficiently using addition, subtraction and shifting.</div>
+
+<h4>Booth rule based on two bits</h4>
+<ul>
+<li>00 → No operation</li>
+<li>11 → No operation</li>
+<li>01 → Add multiplicand</li>
+<li>10 → Subtract multiplicand</li>
+</ul>
+
+<p>After the operation, perform an arithmetic right shift.</p>
+
+<div class="example">
+The algorithm examines the last bit of Q and an extra bit Q₋₁. The pair decides whether to add, subtract or do nothing.
+</div>
+
+<h4>Registers involved</h4>
+<ul>
+<li>A: Partial result</li>
+<li>Q: Multiplier</li>
+<li>M: Multiplicand</li>
+<li>Q₋₁: Extra bit</li>
+</ul>
+
+<p>Repeat for the number of bits in the multiplier.</p>
+`
+},
+
+{
+title: "3. Restoring Division Algorithm",
+body: `
+<div class="simple">Restoring division divides binary numbers by repeatedly subtracting the divisor and restoring the previous value if the result is negative.</div>
+
+<h4>Basic idea</h4>
+<ol>
+<li>Shift the partial remainder and quotient.</li>
+<li>Subtract the divisor.</li>
+<li>If the result is negative, restore the previous remainder and set quotient bit to 0.</li>
+<li>If the result is positive or zero, keep the result and set quotient bit to 1.</li>
+<li>Repeat for all bits.</li>
+</ol>
+
+<div class="example">
+<b>Analogy:</b> Try removing the divisor from what you have. If you went below zero, put it back. If you didn't, keep what you removed.
+</div>
+
+<p>At the end:</p>
+<ul>
+<li>Q contains the quotient.</li>
+<li>A contains the remainder.</li>
+</ul>
+`
+},
+
+{
+title: "4. Floating Point Numbers (IEEE 754)",
+body: `
+<div class="simple">Floating point allows computers to represent very large and very small numbers, similar to scientific notation.</div>
+
+<p>Example in decimal:</p>
+<div class="example">6250 = 6.25 × 10³</div>
+
+<p>IEEE 754 single precision uses 32 bits:</p>
+
+<div class="diagram">
+<div class="diagram-title">32-bit IEEE 754 Format</div>
+<div class="diagram-row">
+<div class="dbox blue" style="flex:1">1 bit<br>Sign</div>
+<div class="dbox teal" style="flex:1">8 bits<br>Exponent</div>
+<div class="dbox purple" style="flex:2">23 bits<br>Fraction</div>
+</div>
+</div>
+
+<ul>
+<li><b>Sign:</b> 0 positive, 1 negative.</li>
+<li><b>Exponent:</b> Stores exponent with a bias of 127.</li>
+<li><b>Fraction:</b> Stores significand fraction bits.</li>
+</ul>
+
+<div class="example">For a normalized number: Value = (−1)ˢ × 1.F × 2^(E−127)</div>
+`
+},
+
+{
+title: "5. Input / Output Devices",
+body: `
+<div class="simple">Input and output devices allow the computer to communicate with the outside world.</div>
+
+<ul>
+<li>Input: Keyboard, mouse, scanner, sensors.</li>
+<li>Output: Monitor, printer, speaker.</li>
+<li>Input/output devices may communicate through controllers and interfaces.</li>
+</ul>
+
+<h4>Two ways CPU communicates with I/O</h4>
+<p><b>Memory-mapped I/O:</b> Device registers are assigned memory addresses.</p>
+<p><b>Isolated I/O:</b> Separate address space and special I/O instructions are used.</p>
+
+<div class="diagram">
+<div class="diagram-title">I/O Communication</div>
+<div class="diagram-row">
+<div class="dbox blue">CPU</div>
+<div class="arrow">↔</div>
+<div class="dbox teal">I/O Controller</div>
+<div class="arrow">↔</div>
+<div class="dbox orange">Device</div>
+</div>
+</div>
+`
+},
+
+{
+title: "6. Interrupts",
+body: `
+<div class="simple">An interrupt is a signal that asks the CPU to pause its current work and handle something important.</div>
+
+<p>Example: You are studying. Someone calls your name. You stop, respond, then continue studying.</p>
+
+<div class="diagram">
+<div class="diagram-title">Interrupt Process</div>
+<div class="diagram-row">
+<div class="dbox blue">Program<br>Running</div>
+<div class="arrow">→</div>
+<div class="dbox pink">Interrupt</div>
+<div class="arrow">→</div>
+<div class="dbox teal">Handle it</div>
+</div>
+<div class="diagram-row" style="margin-top:8px">
+<div class="dbox purple">Return to Program</div>
+</div>
+</div>
+
+<h4>Interrupt steps</h4>
+<ol>
+<li>CPU receives interrupt.</li>
+<li>CPU saves its current state.</li>
+<li>CPU executes the Interrupt Service Routine (ISR).</li>
+<li>CPU restores state.</li>
+<li>CPU continues the interrupted program.</li>
+</ol>
+`
+},
+
+{
+title: "7. Types of Interrupts",
+body: `
+<ul>
+<li><b>Hardware Interrupt:</b> Generated by external hardware devices.</li>
+<li><b>Software Interrupt:</b> Generated by executing an instruction or software request.</li>
+<li><b>Maskable Interrupt:</b> Can be disabled or ignored temporarily by the CPU.</li>
+<li><b>Non-maskable Interrupt:</b> Cannot be disabled using ordinary interrupt masking.</li>
+</ul>
+
+<div class="simple">Interrupts help the CPU respond to events without constantly checking every device.</div>
+`
+},
+
+{
+title: "8. DMA — Direct Memory Access",
+body: `
+<div class="simple">DMA allows a device to transfer data directly to or from memory without the CPU handling every byte.</div>
+
+<div class="diagram">
+<div class="diagram-title">DMA Transfer</div>
+<div class="diagram-row">
+<div class="dbox blue">Device</div>
+<div class="arrow">↔</div>
+<div class="dbox orange">DMA Controller</div>
+<div class="arrow">↔</div>
+<div class="dbox teal">RAM</div>
+</div>
+<div class="diagram-row" style="margin-top:8px">
+<div class="dbox purple">CPU: Sets up transfer, then can do other work</div>
+</div>
+</div>
+
+<h4>How it works</h4>
+<ol>
+<li>CPU gives DMA the transfer details.</li>
+<li>DMA controller transfers data.</li>
+<li>CPU can do other work while transfer happens.</li>
+<li>DMA notifies CPU when complete.</li>
+</ol>
+
+<p><b>Benefit:</b> Less CPU involvement and faster large data transfers.</p>
+`
+}
+
+]
+},
+
+/* ===================== MODULE 4 ===================== */
+
+{
+title: "Basic Processing Unit & Pipelining",
+subtitle: "How instructions are executed and how CPUs improve speed.",
+topics: [
+
+{
+title: "1. Fundamental Concepts & Instruction Execution",
+body: `
+<div class="simple">The CPU repeatedly fetches instructions, understands them and executes them.</div>
+
+<div class="diagram">
+<div class="diagram-title">Instruction Cycle</div>
+<div class="diagram-row">
+<div class="dbox blue">FETCH</div>
+<div class="arrow">→</div>
+<div class="dbox teal">DECODE</div>
+<div class="arrow">→</div>
+<div class="dbox purple">EXECUTE</div>
+<div class="arrow">→</div>
+<div class="dbox orange">STORE</div>
+</div>
+</div>
+
+<ol>
+<li><b>Fetch:</b> Get instruction from memory.</li>
+<li><b>Decode:</b> Understand what the instruction means.</li>
+<li><b>Execute:</b> Perform the operation.</li>
+<li><b>Store:</b> Save the result if required.</li>
+</ol>
+`
+},
+
+{
+title: "2. Single Bus Organization",
+body: `
+<div class="simple">A single-bus CPU uses one shared pathway to move data between registers and components.</div>
+
+<div class="diagram">
+<div class="diagram-title">Single Bus Structure</div>
+<div class="diagram-row">
+<div class="dbox blue">R1</div>
+<div class="dbox teal">R2</div>
+<div class="dbox purple">R3</div>
+<div class="dbox orange">PC</div>
+</div>
+<div style="text-align:center;color:var(--cyan);padding:12px">↓ Shared Bus ↓</div>
+<div class="diagram-row">
+<div class="dbox pink">ALU</div>
+<div class="dbox teal">Memory</div>
+</div>
+</div>
+
+<p>Because everything shares one bus, transfers usually happen one at a time.</p>
+
+<p>Temporary registers such as Y and Z may be used during ALU operations.</p>
+
+<div class="example">To perform R3 ← R1 + R2, the CPU may transfer R1 to Y, send R2 to the ALU, add them, store the result in Z, and transfer Z to R3.</div>
+`
+},
+
+{
+title: "3. Control Sequence & Instruction Execution",
+body: `
+<div class="simple">A control sequence is the series of small steps the CPU performs to complete one instruction.</div>
+
+<h4>Example: Fetch an instruction</h4>
+
+<div class="example">
+Step 1: PC → MAR<br>
+Step 2: Memory Read<br>
+Step 3: Memory data → MDR<br>
+Step 4: MDR → IR<br>
+Step 5: PC increases
+</div>
+
+<p>Each step is controlled by signals generated by the Control Unit.</p>
+
+<p>The exact steps vary according to the instruction and CPU design.</p>
+`
+},
+
+{
+title: "4. Three Bus Organization",
+body: `
+<div class="simple">A three-bus CPU can transfer two operands to the ALU and receive a result at the same time through separate buses.</div>
+
+<div class="diagram">
+<div class="diagram-title">Three Bus Organization</div>
+<div class="diagram-row">
+<div class="dbox blue">Register R1</div>
+<div class="arrow">→</div>
+<div class="dbox teal">Bus A</div>
+<div class="arrow">→</div>
+<div class="dbox purple">ALU</div>
+</div>
+<div class="diagram-row" style="margin-top:8px">
+<div class="dbox blue">Register R2</div>
+<div class="arrow">→</div>
+<div class="dbox orange">Bus B</div>
+<div class="arrow">→</div>
+<div class="dbox purple">ALU</div>
+</div>
+<div class="diagram-row" style="margin-top:8px">
+<div class="dbox pink">ALU Result</div>
+<div class="arrow">→</div>
+<div class="dbox teal">Bus C</div>
+<div class="arrow">→</div>
+<div class="dbox blue">Destination Register</div>
+</div>
+</div>
+
+<p>Multiple buses can reduce the number of transfers required for operations.</p>
+`
+},
+
+{
+title: "5. Pipelining",
+body: `
+<div class="simple">Pipelining allows the CPU to work on different stages of several instructions at the same time.</div>
+
+<p>Imagine washing dishes: while one dish is being rinsed, another can be soaped and another dried.</p>
+
+<h4>5-stage instruction pipeline</h4>
+<div class="diagram">
+<div class="pipeline">
+<div class="blue">IF<br>Fetch</div>
+<div class="teal">ID<br>Decode</div>
+<div class="purple">EX<br>Execute</div>
+<div class="orange">MEM<br>Memory</div>
+<div class="pink">WB<br>Write Back</div>
+</div>
+</div>
+
+<ul>
+<li><b>IF:</b> Instruction Fetch</li>
+<li><b>ID:</b> Instruction Decode / Register Read</li>
+<li><b>EX:</b> Execute</li>
+<li><b>MEM:</b> Memory Access</li>
+<li><b>WB:</b> Write Back</li>
+</ul>
+
+<p>After the pipeline fills, ideally one instruction completes every clock cycle.</p>
+`
+},
+
+{
+title: "6. Pipeline Dependencies",
+body: `
+<div class="simple">A dependency happens when one instruction needs something related to another instruction.</div>
+
+<h4>Example</h4>
+<div class="example">
+I1: R1 = R2 + R3<br>
+I2: R4 = R1 + R5
+</div>
+
+<p>I2 needs R1, which is produced by I1. This creates a dependency.</p>
+
+<p>Dependencies can affect how instructions overlap.</p>
+`
+},
+
+{
+title: "7. Pipeline Hazards",
+body: `
+<div class="simple">A hazard is a situation that prevents an instruction from proceeding in its planned pipeline stage.</div>
+
+<h4>Three main hazards</h4>
+
+<p><b>1. Structural Hazard</b></p>
+<p>Two instructions want the same hardware resource at the same time.</p>
+
+<p><b>2. Data Hazard</b></p>
+<p>An instruction needs data that a previous instruction hasn't finished producing.</p>
+
+<p><b>3. Control Hazard</b></p>
+<p>The CPU doesn't yet know which instruction to execute next because of a branch.</p>
+
+<div class="diagram">
+<div class="diagram-title">Hazard Types</div>
+<div class="diagram-row">
+<div class="dbox blue">Structural<br>Resource conflict</div>
+<div class="dbox teal">Data<br>Data not ready</div>
+<div class="dbox pink">Control<br>Next instruction unclear</div>
+</div>
+</div>
+
+<h4>Solutions</h4>
+<ul>
+<li>Stalling (waiting)</li>
+<li>Forwarding / bypassing data</li>
+<li>Branch prediction or other control-flow techniques</li>
+<li>Resource duplication where appropriate</li>
+</ul>
+`
+}
+
+]
+}
+
+];
+
+/* ===================== QUIZ QUESTIONS ===================== */
+
+const quizQuestions = [
+{
+q: "Which component performs arithmetic calculations?",
+a: ["Control Unit", "ALU", "RAM", "SSD"],
+correct: 1,
+explanation: "The ALU performs arithmetic and logical operations."
+},
+{
+q: "Which register holds the address of the next instruction?",
+a: ["IR", "MDR", "PC", "ACC"],
+correct: 2,
+explanation: "The Program Counter (PC) tracks the next instruction address."
+},
+{
+q: "Which memory is fastest in the hierarchy?",
+a: ["HDD", "RAM", "Registers", "SSD"],
+correct: 2,
+explanation: "CPU registers are the fastest storage locations."
+},
+{
+q: "What does PUSH do to a stack?",
+a: ["Removes an item", "Adds an item to the top", "Sorts the stack", "Clears memory"],
+correct: 1,
+explanation: "PUSH adds a new item to the top of the stack."
+},
+{
+q: "A cache hit means:",
+a: ["Data is missing", "Data is found in cache", "CPU is off", "RAM is empty"],
+correct: 1,
+explanation: "A cache hit occurs when the requested data is found in cache."
+},
+{
+q: "DMA is useful because:",
+a: ["It increases monitor resolution", "It transfers data with less CPU involvement", "It replaces the ALU", "It removes RAM"],
+correct: 1,
+explanation: "DMA allows data transfer with less CPU handling."
+},
+{
+q: "Booth's algorithm is used for:",
+a: ["Binary multiplication", "Sorting", "Memory mapping", "Interrupt handling"],
+correct: 0,
+explanation: "Booth's algorithm is used for signed binary multiplication."
+},
+{
+q: "How many bits are used in IEEE 754 single precision?",
+a: ["16", "24", "32", "64"],
+correct: 2,
+explanation: "Single precision has 32 bits: 1 sign, 8 exponent and 23 fraction bits."
+},
+{
+q: "Which stage interprets the instruction?",
+a: ["Fetch", "Decode", "Write Back", "Memory"],
+correct: 1,
+explanation: "Decode identifies what the fetched instruction means."
+},
+{
+q: "A control hazard is commonly related to:",
+a: ["Branches", "RAM size", "Addition", "Stack capacity"],
+correct: 0,
+explanation: "Control hazards occur when the next instruction path is uncertain, often due to branches."
+}
+];
+
+/* ===================== RENDERING ===================== */
+
+let currentModule = 0;
+let completed = JSON.parse(localStorage.getItem("coaCompleted") || "[]");
+let quizScore = 0;
+let quizAnswered = 0;
+
+function selectModule(index) {
+  currentModule = index;
+  document.querySelectorAll(".module-btn").forEach((btn, i) => {
+    btn.classList.toggle("active", i === index);
+  });
+  renderModule();
+  window.scrollTo({top: document.querySelector(".layout").offsetTop - 70, behavior:"smooth"});
+}
+
+function renderModule() {
+  const module = modules[currentModule];
+
+  let html = `
+    <div class="module-heading">
+      <small>MODULE ${currentModule + 1} / 4</small>
+      <h2>${module.title}</h2>
+      <p>${module.subtitle}</p>
+    </div>
+  `;
+
+  module.topics.forEach((topic, index) => {
+    const id = currentModule + "-" + index;
+    const isDone = completed.includes(id);
+
+    html += `
+      <div class="topic ${isDone ? "completed" : ""}" data-search="${topic.title.toLowerCase()}">
+        <div class="topic-header" onclick="toggleTopic(this)">
+          <h3>${isDone ? "✅ " : ""}${topic.title}</h3>
+          <span>+</span>
+        </div>
+        <div class="topic-body">
+          ${topic.body}
+          <button class="primary-btn" style="margin-top:15px" onclick="markComplete('${id}',this)">
+            ${isDone ? "Completed ✓" : "Mark as completed"}
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="quiz" id="moduleQuiz">
+      <h3>🧠 Quick Revision</h3>
+      <p>After studying this module, test yourself with a quick quiz.</p>
+      <button class="primary-btn" onclick="showQuiz()">Start Quiz</button>
+    </div>
+  `;
+
+  document.getElementById("mainContent").innerHTML = html;
+  updateProgress();
+}
+
+function toggleTopic(header) {
+  const topic = header.parentElement;
+  topic.classList.toggle("open");
+  header.querySelector("span").textContent = topic.classList.contains("open") ? "−" : "+";
+}
+
+function markComplete(id, button) {
+  if (!completed.includes(id)) {
+    completed.push(id);
+    localStorage.setItem("coaCompleted", JSON.stringify(completed));
+  }
+  button.textContent = "Completed ✓";
+  updateProgress();
+  renderModule();
+}
+
+function updateProgress() {
+  const total = modules.reduce((sum, m) => sum + m.topics.length, 0);
+  const percent = Math.round((completed.length / total) * 100);
+  document.getElementById("progressFill").style.width = percent + "%";
+  document.getElementById("progressText").textContent =
+    completed.length + " of " + total + " topics completed (" + percent + "%)";
+}
+
+function resetProgress() {
+  if (confirm("Reset all topic progress?")) {
+    completed = [];
+    localStorage.removeItem("coaCompleted");
+    renderModule();
+  }
+}
+
+function searchTopics() {
+  const query = document.getElementById("search").value.toLowerCase().trim();
+
+  if (!query) {
+    renderModule();
+    return;
+  }
+
+  let results = [];
+
+  modules.forEach((module, moduleIndex) => {
+    module.topics.forEach((topic, topicIndex) => {
+      const text = (topic.title + " " + topic.body).toLowerCase();
+      if (text.includes(query)) {
+        results.push({
+          moduleIndex,
+          topicIndex,
+          title: topic.title,
+          moduleTitle: module.title,
+          body: topic.body
+        });
+      }
+    });
+  });
+
+  let html = `
+    <div class="module-heading">
+      <small>SEARCH RESULTS</small>
+      <h2>Found ${results.length} topic(s)</h2>
+      <p>Results for "${query}"</p>
+    </div>
+  `;
+
+  results.forEach(result => {
+    html += `
+      <div class="topic open">
+        <div class="topic-header">
+          <h3>${result.title}</h3>
+        </div>
+        <div class="topic-body" style="display:block">
+          <small style="color:var(--cyan)">${result.moduleTitle}</small>
+          ${result.body}
+          <button class="primary-btn" onclick="selectModule(${result.moduleIndex})">Open Module</button>
+        </div>
+      </div>
+    `;
+  });
+
+  if (!results.length) {
+    html += `<div class="topic"><div class="topic-body" style="display:block">No matching topics found. Try another keyword.</div></div>`;
+  }
+
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+/* ===================== QUIZ ===================== */
+
+function showQuiz() {
+  document.getElementById("search").value = "";
+  quizScore = 0;
+  quizAnswered = 0;
+
+  let html = `
+    <div class="module-heading">
+      <small>KNOWLEDGE CHECK</small>
+      <h2>🧠 COA Quiz</h2>
+      <p>10 questions. Choose your answer and read the explanation.</p>
+    </div>
+    <div class="quiz" id="quizContainer">
+  `;
+
+  quizQuestions.forEach((question, qIndex) => {
+    html += `
+      <div class="question" id="q${qIndex}">
+        <p><b>${qIndex + 1}. ${question.q}</b></p>
+        ${question.a.map((option, optionIndex) => `
+          <button class="option" onclick="answerQuestion(${qIndex},${optionIndex},this)">
+            ${String.fromCharCode(65 + optionIndex)}. ${option}
+          </button>
+        `).join("")}
+        <div class="feedback" id="feedback${qIndex}"></div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="quiz-result" id="quizResult"></div>
+    <button class="primary-btn" style="margin-top:15px" onclick="resetQuiz()">Try Again</button>
+    </div>
+  `;
+
+  document.getElementById("mainContent").innerHTML = html;
+  document.querySelectorAll(".module-btn").forEach(btn => btn.classList.remove("active"));
+  window.scrollTo({top: document.querySelector(".layout").offsetTop - 70, behavior:"smooth"});
+}
+
+function answerQuestion(qIndex, optionIndex, button) {
+  const question = quizQuestions[qIndex];
+  const container = document.getElementById("q" + qIndex);
+
+  if (container.dataset.answered) return;
+  container.dataset.answered = "true";
+  quizAnswered++;
+
+  const buttons = container.querySelectorAll(".option");
+  buttons.forEach(btn => btn.disabled = true);
+
+  if (optionIndex === question.correct) {
+    button.classList.add("correct");
+    quizScore++;
+  } else {
+    button.classList.add("wrong");
+    buttons[question.correct].classList.add("correct");
+  }
+
+  document.getElementById("feedback" + qIndex).innerHTML =
+    (optionIndex === question.correct ? "✔ Correct! " : "✖ Incorrect. ") +
+    question.explanation;
+
+  if (quizAnswered === quizQuestions.length) {
+    const percent = Math.round(quizScore / quizQuestions.length * 100);
+    document.getElementById("quizResult").innerHTML =
+      `Your score: ${quizScore}/${quizQuestions.length} (${percent}%)` +
+      (percent >= 80 ? " — Excellent! 🎉" :
+       percent >= 50 ? " — Good job! Keep revising 💪" :
+       " — Review the modules and try again 📚");
+  }
+}
+
+function resetQuiz() {
+  showQuiz();
+}
+
+/* ===================== INIT ===================== */
+
+renderModule();
+</script>
+
+</body>
+</html>
